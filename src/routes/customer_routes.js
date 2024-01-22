@@ -5,7 +5,7 @@ const { ensureAuth } = require('../services/authenticated')
 const express = require('express')
 const api = express.Router()
 
-//Todas las rutas
+//Customer Routes
 api.post('/login', customerController.login)
 api.post('/register', customerController.register)
 api.get('/readInfo', ensureAuth, customerController.readInfo)

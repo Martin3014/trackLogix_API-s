@@ -3,7 +3,7 @@
 const Customers = require('./customers')
 const Status = require('./status')
 const { DataTypes } = require('sequelize')
-const sequelize = require('../../config/db')
+const sequelize = require('../../config/database')
 
 const packages = sequelize.define('packages', {
     id: {

@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
         const newCustomer = await Customers.create({
             name: data.name,
             last_name: data.last_name,
-            code: generateRandomCode(),
+            code: randomCode(),
             mail: data.mail,
             phone_number: data.phone_number,
             password: data.password
@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
     }
 };
 
-const generateRandomCode = () => {
+const randomCode = () => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
 

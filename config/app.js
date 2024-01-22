@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 //Routes
-const customerRoutes = require('../src/routes/customer')
+const customerRoutes = require('../src/routes/customer_routes')
 
 //Server config
 app.use(express.urlencoded({extended:false}));

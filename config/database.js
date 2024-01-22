@@ -10,5 +10,5 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
 });
 
-// Exporta la instancia de Sequelize
+// Export Sequelize
 module.exports = sequelize;
