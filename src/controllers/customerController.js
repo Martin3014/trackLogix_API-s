@@ -7,30 +7,33 @@ const { createToken } = require('../services/jwt')
 const { compare } = require('bcrypt')
 require('sequelize')
 
-exports.login = async(req, res) => {
-    try{
-        let data = req.body
-        if(!data.email || data.mail == '' || !data.password || data.password == '') return res.status(400).send({message: 'The passoword and email are required'})
-        let customerCredentials = await Customers.findOne({
+exports.register = async (req, res) => {
+    try {
+        let data = req.body;
+        let mailExist = await Customers.findOne({
             where: {
-                email: data.email,
+                mail: data.mail
             }
-
-        })
-        if(!customerCredentials) return res.status(404).send({message: 'Email not registred'})
-        if(customerCredentials && await checkPassword(data.password, customerCredentials.password)){
-            console.log('Password match!');
-            let token = await createToken(customerCredentials)
-            return res.send({ message: 'User logged succesfully', token})
-        }else{
-            console.log('Password mismatch or user not found');
-            return res.status(404).send({ message: 'Invalid Credentials' });
+        });
+        if (mailExist) {
+            return res.status(401).send({ message: 'Email is already registered' });
         }
-    }catch(err){
-        console.error(err)
-        return res.status(500).send({message: 'Error creating accout', err})
+        data.password = await encrypt(data.password);
+        const newCustomer = await Customers.create({
+            name: data.name,
+            last_name: data.last_name,
+            code: generateRandomCode(),
+            mail: data.mail,
+            phone_number: data.phone_number,
+            password: data.password
+        });
+
+        return res.status(201).send({ message: 'Customer registered successfully', customer: newCustomer });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error during registration', err });
     }
-}
+};
 
 const generateRandomCode = () => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -49,33 +52,36 @@ const generateRandomCode = () => {
     return code;
 };
 
-exports.register = async(req, res) => {
-    try{
-        let data = req.body
-        let mailExist = await Customers.findOne({
+exports.login = async (req, res) => {
+    try {
+        let data = req.body;
+        if (!data.mail || data.mail == '' || !data.password || data.password == '') {
+            return res.status(400).send({ message: 'Both email and password are required' });
+        }
+        let customerCredentials = await Customers.findOne({
             where: {
-                mail: data.mail
+                mail: data.mail,
             }
-        })
-        if(mailExist) return res.status(401).send({message: 'mail is already exist'})
-        data.password = await encrypt(data.password)
-        const newCustomer = await Customers.create({
-            name: data.name,
-            last_name: data.last_name,
-            code: generateRandomCode(),
-            mail: data.mail,
-            phone_number: data.phone_number,
-            password: data.password
         });
-
-        return res.status(201).send({ message: 'Customer registered successfully', customer: newCustomer});
-    }catch(err){
-        console.log(err)
-        return res.status(500).send({message: 'Error in the register', err})
+        if (!customerCredentials) {
+            console.log('Email not registered');
+            return res.status(404).send({ message: 'Email not registered' });
+        }
+        if (customerCredentials && (await checkPassword(data.password, customerCredentials.password))) {
+            console.log('User logged in successfully');
+            let token = await createToken(customerCredentials);
+            return res.send({ message: 'User logged in successfully', token });
+        } else {
+            console.log('Invalid credentials');
+            return res.status(404).send({ message: 'Invalid credentials' });
+        }
+    } catch (err) {
+        console.error('Error during login:', err);
+        return res.status(500).send({ message: 'Error during login', err });
     }
-}
+};
 
-exports.getYourInfo = async(req, res) => {
+exports.readInfo = async(req, res) => {
     try{
         let customerId = req.user.sub
         let customerExist = await Customers.findOne({
@@ -94,7 +100,7 @@ exports.getYourInfo = async(req, res) => {
     }
 }
 
-exports.getYourPackages = async(req, res) => {
+exports.readPackages = async(req, res) => {
     try{
         let customerId = req.user.sub
         let packages = await Packages.findAll({
@@ -113,7 +119,7 @@ exports.getYourPackages = async(req, res) => {
     }
 }
 
-exports.updatePassword = async(req, res) => {
+exports.updatePass = async(req, res) => {
     try{
         let customerId = req.user.sub
         let customerRouteId = req.params.id
@@ -144,7 +150,7 @@ exports.updatePassword = async(req, res) => {
     }
 }
 
-exports.editYourAccount = async(req, res) => {
+exports.updateInfo = async(req, res) => {
     try{
         let data = req.body
         let customerId = req.user.sub
