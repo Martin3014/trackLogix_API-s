@@ -10,8 +10,8 @@ const options = {
     info: { title: 'Crossfit WOD API', version: '1.0.0' },
   },
   apis: [
-    path.resolve(__dirname, '../../routes/customer_routes.js'),  // Adjusted path
-    path.resolve(__dirname, '../../models/customers.js'),        // Adjusted path
+    path.resolve(__dirname, '../routes/customer_routes.js'),  // Adjusted path
+    path.resolve(__dirname, '../models/customers.js'),        // Adjusted path
   ],
 };
 
@@ -27,7 +27,7 @@ const swaggerDocs = (app, port) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
-  console.log(`Version 1 Docs are available on http://localhost:${port}/api/v1/docs`);
+  console.log(`Version 1 Docs are available on http://localhost:${port}/api/`);
 };
 
 module.exports = { swaggerDocs };

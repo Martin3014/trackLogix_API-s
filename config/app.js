@@ -4,7 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const { swaggerDocs } = require('../src/v1/swagger');  // Importa la función swaggerDocs
+const { swaggerDocs } = require('../src/services/swagger');  // Importa la función swaggerDocs
 
 const app = express();
 
