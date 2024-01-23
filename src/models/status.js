@@ -23,7 +23,7 @@ const status = sequelize.define('status', {
         allowNull: false
     }
 }, {
-    tableName: 'status',
+    tableName: 'statuses',
     timestamps: false
 })
 

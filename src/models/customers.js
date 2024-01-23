@@ -34,7 +34,7 @@ const customers = sequelize.define('customers', {
         type: DataTypes.STRING,
     }
 }, {
-    tableName: 'Customer', 
+    tableName: 'customers', 
     timestamps: false, 
 });
 
